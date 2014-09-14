@@ -11,7 +11,7 @@ import lxml.etree as ET
 import sqlite3
 import sys
 
-TIMESPAN = 978307200000 # we want correct dates
+TIMESPAN = 978307200 # we want correct dates
 
 def main():
     """ Do the magic! """
@@ -36,13 +36,11 @@ def main():
 
         rows = cur.fetchall()
 
-        i = 0
-
         for row in rows:
             sms = ET.SubElement(root, 'sms')
             sms.set('protocol', '0')
             sms.set('address', str(row[0]))
-            sms.set('date', str(row[1] * 1000 + TIMESPAN))
+            sms.set('date', str((row[1] + TIMESPAN) * 1000))
             sms.set('type', '2' if row[2] == 1 else '1')
             sms.set('subject', '')
             sms.set('body', row[3] if row[3] is not None else '')
@@ -51,9 +49,8 @@ def main():
             sms.set('service_center', '0')
             sms.set('read', '1')
             sms.set('status', '-1')
-            i += 1
 
-        root.set('count', str(i))
+        root.set('count', len(rows))
 
     finally:
         if database:
