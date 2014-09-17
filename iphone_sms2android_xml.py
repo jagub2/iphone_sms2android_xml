@@ -50,7 +50,7 @@ def main():
             sms.set('read', '1')
             sms.set('status', '-1')
 
-        root.set('count', len(rows))
+        root.set('count', str(len(rows)))
 
     finally:
         if database:
